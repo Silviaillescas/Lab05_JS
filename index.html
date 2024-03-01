@@ -1,0 +1,255 @@
+<!--
+(10 puntos) Por colocar el campo de texto para escribir el mensaje en la parte inferior de la pantalla (no debe ocultarse cuando hay muchos mensajes)
+(10 puntos) Por limitar la cantidad de caracteres permitidos a 140 en cada mensaje 
+(10 puntos) Por agregar hacer "submit" del mensaje utilizando "Enter"
+(20 puntos) Por preservar el scroll después de recibir nuevos mensajes
+(20 puntos) Por detectar un link a una imagen dentro del texto y crear una preview en la lista de mensajes
+(30 puntos) Por detectar un link a una página web dentro del texto y crear una preview en la lista de mensajes (no puede ser un iframe)
+(15 puntos) Por ofrecer la opción de cambiar entre un tema claro y oscuro, recordando la preferencia del usuario en visitas futuras usando localStorage.
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <script type="application/javascript">
+      // Crear lista para los mensajes
+      const ul = document.createElement('ul');
+      document.body.append(ul);
+
+      // Crear textarea para ingresar mensajes
+      const t = document.createElement('textarea');
+      t.style.width = '100%';
+      t.style.height = '50px';
+      t.style.marginBottom = '10px';
+      t.style.resize = 'none';
+      t.setAttribute('maxlength', '140'); // Limitar a 140 caracteres
+      document.body.append(t);
+
+      // Crear botón para enviar mensajes
+      const b = document.createElement('button');
+      b.append('SEND');
+      b.style.backgroundColor = '#4CAF50';
+      b.style.color = 'white';
+      b.style.padding = '10px 20px';
+      b.style.border = 'none';
+      b.style.borderRadius = '5px';
+      b.style.cursor = 'pointer';
+      document.body.append(b);
+
+      // Función para enviar mensajes
+      const postMessage = async () => {
+        const body = {
+          username: 'Usuario',
+          message: t.value,
+        };
+        const response = await fetch('https://chat.tiburoncin.lat/messages', {
+          method: 'POST',
+          body: JSON.stringify(body)
+        });
+        getMessages();
+        t.value = '';
+      };
+
+      // Escuchar evento de clic en el botón
+      b.addEventListener('click', postMessage);
+
+      // Función para obtener los mensajes
+      const getMessages = async () => {
+        const scrollTopBefore = ul.scrollTop;
+
+        const response = await fetch('https://chat.tiburoncin.lat/messages');
+        const messages = await response.json();
+
+        ul.innerHTML = '';
+
+        // Recorrer los mensajes y mostrar en la lista
+        messages.forEach((message) => {
+          const li = document.createElement('li');
+          li.textContent = `${message.username}: ${message.message}`;
+          // Aquí se detecta si hay un enlace a una imagen y se crea una preview
+          if (message.message.match(/\bhttps?:\/\/\S+\.(png|jpg|jpeg|gif)\b/i)) {
+            const img = document.createElement('img');
+            img.src = message.message;
+            img.style.maxWidth = '200px'; // Tamaño máximo para la imagen
+            li.appendChild(img);
+          }
+          // Aquí se detecta si hay un enlace a una página web y se crea una preview 
+          const urlMatch = message.message.match(/\bhttps?:\/\/\S+\b/i);
+          if (urlMatch && !urlMatch[0].match(/\.(png|jpg|jpeg|gif)\b/i)) {
+            const a = document.createElement('a');
+            a.href = urlMatch[0];
+            a.textContent = urlMatch[0];
+            a.target = '_blank'; // Abrir enlace en una nueva pestaña
+            li.appendChild(a);
+          }
+          ul.append(li);
+        });
+
+        // Preservar la posición del scroll después de obtener nuevos mensajes
+        ul.scrollTop = scrollTopBefore;
+      };
+
+      // Obtener mensajes al cargar la página
+      getMessages();
+
+      // Escuchar evento de entrada en el campo de texto para limitar la longitud del mensaje
+      t.addEventListener('input', () => {
+        if (t.value.length > 140) {
+          t.value = t.value.slice(0, 140);
+        }
+      });
+
+      // Escuchar evento de teclado en el campo de texto para enviar el mensaje con Enter
+      t.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          postMessage();
+        }
+      });
+
+      // Agregar tema claro y oscuro
+      let isDarkTheme = localStorage.getItem('isDarkTheme') === 'true';
+
+      const toggleTheme = () => {
+        isDarkTheme = !isDarkTheme;
+        localStorage.setItem('isDarkTheme', isDarkTheme.toString());
+
+        // Cambiar estilos según el tema
+        if (isDarkTheme) {
+          document.body.style
+<!--
+(10 puntos) Por colocar el campo de texto para escribir el mensaje en la parte inferior de la pantalla (no debe ocultarse cuando hay muchos mensajes)
+(10 puntos) Por limitar la cantidad de caracteres permitidos a 140 en cada mensaje 
+(10 puntos) Por agregar hacer "submit" del mensaje utilizando "Enter"
+(20 puntos) Por preservar el scroll después de recibir nuevos mensajes
+(20 puntos) Por detectar un link a una imagen dentro del texto y crear una preview en la lista de mensajes
+(30 puntos) Por detectar un link a una página web dentro del texto y crear una preview en la lista de mensajes (no puede ser un iframe)
+(15 puntos) Por ofrecer la opción de cambiar entre un tema claro y oscuro, recordando la preferencia del usuario en visitas futuras usando localStorage.
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <script type="application/javascript">
+      // Crear lista para los mensajes
+      const ul = document.createElement('ul');
+      document.body.append(ul);
+
+      // Crear textarea para ingresar mensajes
+      const t = document.createElement('textarea');
+      t.style.width = '100%';
+      t.style.height = '50px';
+      t.style.marginBottom = '10px';
+      t.style.resize = 'none';
+      t.setAttribute('maxlength', '140'); // Limitar a 140 caracteres
+      document.body.append(t);
+
+      // Crear botón para enviar mensajes
+      const b = document.createElement('button');
+      b.append('SEND');
+      b.style.backgroundColor = '#4CAF50';
+      b.style.color = 'white';
+      b.style.padding = '10px 20px';
+      b.style.border = 'none';
+      b.style.borderRadius = '5px';
+      b.style.cursor = 'pointer';
+      document.body.append(b);
+
+      // Función para enviar mensajes
+      const postMessage = async () => {
+        const body = {
+          username: 'Usuario',
+          message: t.value,
+        };
+        const response = await fetch('https://chat.tiburoncin.lat/messages', {
+          method: 'POST',
+          body: JSON.stringify(body)
+        });
+        getMessages();
+        t.value = '';
+      };
+
+      // Escuchar evento de clic en el botón
+      b.addEventListener('click', postMessage);
+
+      // Función para obtener los mensajes
+      const getMessages = async () => {
+        const scrollTopBefore = ul.scrollTop;
+
+        const response = await fetch('https://chat.tiburoncin.lat/messages');
+        const messages = await response.json();
+
+        ul.innerHTML = '';
+
+        // Recorrer los mensajes y mostrar en la lista
+        messages.forEach((message) => {
+          const li = document.createElement('li');
+          li.textContent = `${message.username}: ${message.message}`;
+          // Aquí se detecta si hay un enlace a una imagen y se crea una preview
+          if (message.message.match(/\bhttps?:\/\/\S+\.(png|jpg|jpeg|gif)\b/i)) {
+            const img = document.createElement('img');
+            img.src = message.message;
+            img.style.maxWidth = '200px'; // Tamaño máximo para la imagen
+            li.appendChild(img);
+          }
+          // Aquí se detecta si hay un enlace a una página web y se crea una preview 
+          const urlMatch = message.message.match(/\bhttps?:\/\/\S+\b/i);
+          if (urlMatch && !urlMatch[0].match(/\.(png|jpg|jpeg|gif)\b/i)) {
+            const a = document.createElement('a');
+            a.href = urlMatch[0];
+            a.textContent = urlMatch[0];
+            a.target = '_blank'; // Abrir enlace en una nueva pestaña
+            li.appendChild(a);
+          }
+          ul.append(li);
+        });
+
+        // Preservar la posición del scroll después de obtener nuevos mensajes
+        ul.scrollTop = scrollTopBefore;
+      };
+
+      // Obtener mensajes al cargar la página
+      getMessages();
+
+      // Escuchar evento de entrada en el campo de texto para limitar la longitud del mensaje
+      t.addEventListener('input', () => {
+        if (t.value.length > 140) {
+          t.value = t.value.slice(0, 140);
+        }
+      });
+
+      // Escuchar evento de teclado en el campo de texto para enviar el mensaje con Enter
+      t.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          postMessage();
+        }
+      });
+
+      // Agregar tema claro y oscuro
+      let isDarkTheme = localStorage.getItem('isDarkTheme') === 'true';
+
+      const toggleTheme = () => {
+        isDarkTheme = !isDarkTheme;
+        localStorage.setItem('isDarkTheme', isDarkTheme.toString());
+
+        // Cambiar estilos según el tema
+        if (isDarkTheme) {
+          document.body.style.backgroundColor = '#333';
+          document.body.style.color = '#fff';
+        } else {
+          document.body.style.backgroundColor = '#fff';
+          document.body.style.color = '#333';
+        }
+      };
+
+      // Llamar a la función para cambiar el tema
+      toggleTheme();
+
+    </script>
+  </body>
+</html>
